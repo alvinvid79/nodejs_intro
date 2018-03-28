@@ -58,12 +58,14 @@ class MyRouter{
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           res.end('500 - Internal Error');
       } else {
-          res.writeHead(responseCode,{ 'Content-Type': contentType });
+        var testme = 'This is using template literals';  
+        let nData = eval('`'+data+'`');
+        res.writeHead(responseCode,{ 'Content-Type': contentType });
 
 
 
           
-          res.end(data);
+          res.end(nData);
       }
       });
   }
