@@ -1,22 +1,27 @@
 
-const fs = require('fs'),
-url = require('url'),
-querystring = require('querystring');
+
 
 /**
  * This class is a router or controller meant to be used by myserver.js.  The route added has priority over path resources.
  * To add a route method, path and callback has to be provided
  */
 class MyRouter{
-    constructor() {
-        this.marr = {
-            GET : {},
-            PUT : {},
-            POST : {},
-            DELETE : {}
-        };
-  }
-  
+
+
+    constructor()
+    {
+        this.fs = require('fs');
+        this.url = require('url');
+        this.querystring = require('querystring');
+        this.m = {
+            GET : require('./handlers/getRoutes'),
+            POST : require('./handlers/postRoutes'),
+            PUT : require('./handlers/putRoutes'),
+            DELETE : require('./handlers/deleteRoutes')
+        }
+
+    }
+
   /**
    * This method maps a callback function to the provided method and path/url
    * @param {GET,PUT,POST and delete are the only method supported} method 
@@ -25,7 +30,7 @@ class MyRouter{
    */
   addroute(method,path,callback)
   {
-    this.marr[method][path]=callback;
+    this.m[method][path]=callback;
   }
   
   /**
@@ -53,7 +58,7 @@ class MyRouter{
           path = path.toLowerCase() + '.html';
       }
 
-      fs.readFile(__dirname + path, function(err,data) {
+      this.fs.readFile(__dirname + path, function(err,data) {
       if(err) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           res.end('500 - Internal Error');
@@ -79,16 +84,16 @@ class MyRouter{
    */
   route(req, res){
         try{
-            var theURL = url.parse(req.url);
+            var theURL = this.url.parse(req.url);
             var thepath = theURL.pathname.split('/');
-            var theQ = querystring.parse(theURL.query);
+            var theQ = this.querystring.parse(theURL.query);
             do
             {
                 var testpath = thepath.join('/');
-                if(this.marr[req.method][testpath])
+                if(this.m[req.method][testpath])
                 {
                     console.log('I found my router');
-                    this.marr[req.method][testpath](req,res,theQ);
+                    this.m[req.method][testpath](req,res,theQ);
                     break;
                 }
             }while(thepath.pop());

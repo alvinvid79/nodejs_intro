@@ -1,14 +1,26 @@
 const MyServer = require('./myserver.js'),
-MyRouter = require('./myrouter')
+MyRouter = require('./myrouter');
 const hostname = '127.0.0.1';
 const port = 3000;
-const router = new MyRouter();
 
+
+/*
+const routeArray = new m2d();
+//add(name,methodArray)
+console.log(gethandlers['/about']);
+routeArray.add('GET',gethandlers);
+routeArray.add('POST',posthandlers);
+console.log(routeArray.constructor.name);
+
+const router = new MyRouter(routeArray);
+*/
+
+const router = new MyRouter();
 const server = new MyServer(hostname,port,router);
 
 
 //Add the routes 
-
+/*
 router.addroute('GET','/about',function(req,res,qstr){
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
@@ -39,7 +51,7 @@ router.addroute('POST','/',function(req,res,qstr){
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello Post Root!!!\n');
 });
-
+*/
 
 
 server.start();
