@@ -22,6 +22,7 @@ class MyRouter{
 
     }
 
+   
   /**
    * This method maps a callback function to the provided method and path/url
    * @param {GET,PUT,POST and delete are the only method supported} method 
