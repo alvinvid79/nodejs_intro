@@ -56,22 +56,22 @@ class MyRouter{
           path = path.toLowerCase();
       }else
       {
-          path = path.toLowerCase() + '.html';
+          //path = path.toLowerCase() + '.html';
       }
 
       this.fs.readFile(__dirname + path, function(err,data) {
       if(err) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
-          res.end('500 - Internal Error');
+          res.end('500 - Internal Error' + __dirname + path);
       } else {
         var testme = 'This is using template literals';  
-        let nData = eval('`'+data+'`');
+        //let nData = eval('`'+data+'`');
+        if(path.includes('.pdf'))
+        {
+            contentType = 'application/pdf';
+        }
         res.writeHead(responseCode,{ 'Content-Type': contentType });
-
-
-
-          
-          res.end(nData);
+        res.end(data);
       }
       });
   }
@@ -91,6 +91,7 @@ class MyRouter{
             do
             {
                 var testpath = thepath.join('/');
+                console.log(testpath);
                 if(this.m[req.method][testpath])
                 {
                     console.log('I found my router');
