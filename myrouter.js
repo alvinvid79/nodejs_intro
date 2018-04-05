@@ -59,7 +59,8 @@ class MyRouter{
           //path = path.toLowerCase() + '.html';
       }
 
-      this.fs.readFile(__dirname + path, function(err,data) {
+      //console.log('Book path is ' +  decodeURI(path));
+      this.fs.readFile(__dirname + decodeURI(path), function(err,data) {
       if(err) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           res.end('500 - Internal Error' + __dirname + path);
@@ -85,17 +86,18 @@ class MyRouter{
    */
   route(req, res){
         try{
-            var theURL = this.url.parse(req.url);
+            var theURL = this.url.parse(req.url,true);
             var thepath = theURL.pathname.split('/');
-            var theQ = this.querystring.parse(theURL.query);
+            //var theQ = this.querystring.parse(theURL.query);
+            //console.log(theURL.query);
             do
             {
                 var testpath = thepath.join('/');
-                console.log(testpath);
+                //console.log(testpath);
                 if(this.m[req.method][testpath])
                 {
-                    console.log('I found my router');
-                    this.m[req.method][testpath](req,res,theQ);
+                    //console.log('I found my router ' + theURL.search);
+                    this.m[req.method][testpath](req,res,theURL.query);
                     break;
                 }
             }while(thepath.pop());
@@ -104,6 +106,7 @@ class MyRouter{
             {
                 //If your in here that means a router wasn't found
                 //We can try to find a resource or a file
+                //console.log('Looking for static');
                 this.serveStaticFile(res, theURL.pathname, 'text/html');
             }
     

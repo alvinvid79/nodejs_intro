@@ -20,21 +20,25 @@ class MyServer {
 module.exports = MyServer; 
 */
 
-const https = require('https'),
+//const https = require('https'),
+const https = require('http'),
 fs = require('fs'),
 Router = require('./myrouter');
 
 function MyServer(ipadd,hport,myrouter){ 
         let hostname = ipadd;
         let port = hport;
+        /*
         let options = {
             key: fs.readFileSync('./key.pem'),
             cert: fs.readFileSync('./certificate.pem')
           };
           
         let server = https.createServer(options,(req,res) =>{ myrouter.route(req,res)});
-
-
+*/
+    let server = https.createServer((req,res) =>{ 
+        //req.
+        myrouter.route(req,res)});
     this.start = function(){
         server.listen(port, hostname, () => {
         console.log(`Server running at http://${hostname}:${port}/`);

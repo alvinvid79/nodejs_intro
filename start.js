@@ -2,7 +2,8 @@ const MyServer = require('./myserver.js'),
 MyRouter = require('./myrouter');
 const hostname = '127.0.0.1';
 const port = 3000;
-
+//const hostname = '63.149.221.162';
+//const port = 80;
 
 /*
 const routeArray = new m2d();
