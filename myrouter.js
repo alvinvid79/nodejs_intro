@@ -85,31 +85,50 @@ class MyRouter{
    * @param {The http.IncommingMessage response} res 
    */
   route(req, res){
+        //Check if you have the proper session cookie else check if you PUT to the /login handler otherwise say your not authrized
+        //var myHeader = JSON.stringify(req.headers);
+        //console.log("myHeader " + req.url);
         try{
-            var theURL = this.url.parse(req.url,true);
-            var thepath = theURL.pathname.split('/');
-            //var theQ = this.querystring.parse(theURL.query);
-            //console.log(theURL.query);
-            do
+            if('GUID=37051800-9d87-4a03-b94a-04000cbff81e path=/' === req.headers.cookie )//|| req.method === 'PUT' && req.url === '/login' )
             {
-                var testpath = thepath.join('/');
-                //console.log(testpath);
-                if(this.m[req.method][testpath])
+                var theURL = this.url.parse(req.url,true);
+                var thepath = theURL.pathname.split('/');
+                //var theQ = this.querystring.parse(theURL.query);
+                do
                 {
-                    //console.log('I found my router ' + theURL.search);
-                    this.m[req.method][testpath](req,res,theURL.query);
-                    break;
+                    var testpath = thepath.join('/');
+                    //console.log(testpath);
+                    if(this.m[req.method][testpath])
+                    {
+                        this.m[req.method][testpath](req,res,theURL.query);
+                        return 0;
+                    }
+
+                    console.log(testpath);
+                }while(thepath.pop());
+
+                if(!thepath.length)
+                {
+
+                    //If your in here that means a router wasn't found
+                    //We can try to find a resource or a file
+                    console.log('Looking for static');
+                    this.serveStaticFile(res, theURL.pathname, 'text/html');
+                    return 0;
                 }
-            }while(thepath.pop());
-    
-            if(!thepath.length)
+            }else if(req.method === 'POST' && req.url === '/login' )
             {
-                //If your in here that means a router wasn't found
-                //We can try to find a resource or a file
-                //console.log('Looking for static');
-                this.serveStaticFile(res, theURL.pathname, 'text/html');
+                this.m[req.method]['/login'](req,res);
             }
-    
+            else
+            {
+
+                //res.statusCode = 200;
+                //res.setHeader('Content-Type', 'text/plain');
+                //res.end('Sorry you are not authorized!!!\n');
+                this.serveStaticFile(res, '/nodeserver/test.html', 'text/html');
+            }
+
         }catch(error)
         {
             console.log(error);
@@ -117,6 +136,7 @@ class MyRouter{
             res.setHeader('Content-Type', 'text/plain');
             res.end('Sorry please fix me!!!\n');
         }
+        return 0;
     }
 }
 
